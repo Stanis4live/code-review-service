@@ -10,12 +10,15 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Устанавливаем зависимости. Команда, которая выполнится при первом запуске контейнера
+RUN addgroup celerygroup && adduser --ingroup celerygroup celeryuser
 RUN pip install --no-cache-dir psycopg2-binary
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем содержимое локальной директории в контейнер. Из корневой директории проекта в корневую директорию образа либо
 # в директорию, которую я установил в WORKDIR
 COPY . .
+
+USER celeryuser
 
 # Указываем порт, на котором будет работать приложение внутри образа
 EXPOSE 8000
