@@ -1,0 +1,72 @@
+version: '3.8'
+
+# Образы, которые будут подключаться. Названия сам задаю.
+services:
+   # Основной сервис python + библиотеки из requirements.txt
+  web:
+    # указываем на Dockerfile с настройками сервиса (образа).
+    build: .
+    # Команда, которая должна выполняться при построении сервиса. Будет запускать локальный сервер django
+    # Адрес и порт к которому будем подключаться: localhost
+    command: python3 manage.py runserver 0.0.0.0:8000
+    container_name: web
+    # Тома, при помощи которых соединяем папку на host машине с текущей папкой.
+    volumes:
+      # в текущем проекте, текущую папку(.) соединяем (:)  с папкой (app) как в файле Dockerfile
+      - .:/app
+    ports:
+      # порт на локальной машине(оригинальный):порт, указанный в настройках Dockerfile(порты разных образов друг с
+      # другом не связаны и могут повторяться)
+      - "8000:8000"
+    # Зависимость от сервиса db. Сервис web (django) сможет обращаться к сервису db.
+    depends_on:
+      - db
+
+  # Так как для db нет docker файла, то прописываем образ тут
+  db:
+    # образ
+    image: postgres:15.4-bullseye
+    # в случае остановки образа, всегда перезапуск
+    restart: always
+    # Значения и переменные, которые понадобятся при работе с образом
+    environment:
+      # название (любое)
+      POSTGRES_DB: code_review_service
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    container_name: db
+    # тут создаём папку внутри проекта (postgres_data) для хранения данных и соединяем её (:) с папкой на host машине
+    # (она стандартная для postgresql)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+
+  redis:
+    image: redis:7.2.0
+    ports:
+      - "6379:6379"
+
+  celery_worker:
+    build: .
+    command: celery -A code_review_service worker --loglevel=info
+    volumes:
+      # вся ваша кодовая база находится в директории /app внутри каждого контейнера
+      - .:/app
+    depends_on:
+      - db
+      - redis
+
+  celery_beat:
+    build: .
+    command: celery -A code_review_service beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+
+# создаём том с именем postgres_data.
+volumes:
+  postgres_data:
