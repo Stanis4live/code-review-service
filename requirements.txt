@@ -10,4 +10,7 @@ sqlparse==0.4.4
 tomli==2.0.1
 typing_extensions==4.7.1
 celery==5.3.1
-
+python-decouple==3.8
+psycopg2-binary==2.9.7
+celery==5.3.1
+redis==5.0.0rc2

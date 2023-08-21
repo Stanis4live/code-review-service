@@ -21,6 +21,9 @@ services:
     # Зависимость от сервиса db. Сервис web (django) сможет обращаться к сервису db.
     depends_on:
       - db
+    env_file:
+      - .env
+
 
   # Так как для db нет docker файла, то прописываем образ тут
   db:
@@ -41,6 +44,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    env_file:
+      - .env
+
 
 
   redis:
@@ -57,6 +63,9 @@ services:
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
+
 
   celery_beat:
     build: .
@@ -66,6 +75,9 @@ services:
     depends_on:
       - db
       - redis
+    env_file:
+      - .env
+
 
 # создаём том с именем postgres_data.
 volumes:

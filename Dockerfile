@@ -10,6 +10,7 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Устанавливаем зависимости. Команда, которая выполнится при первом запуске контейнера
+RUN pip install --no-cache-dir psycopg2-binary
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем содержимое локальной директории в контейнер. Из корневой директории проекта в корневую директорию образа либо
