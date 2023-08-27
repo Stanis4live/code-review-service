@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="card shadow-lg">
+          <div class="card-header bg-primary text-white">
+            Registration
+          </div>
+           <!-- Вставляем блок для вывода сообщений здесь -->
+          {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+          <div class="card-body">
+            <form method="post" class="needs-validation" novalidate>
+              {% csrf_token %}
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <small class="form-text text-muted">Your email must be unique.</small>
+                <div class="invalid-feedback">
+                  Please enter a valid email.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="password1" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password1" name="password1" required minlength="8" maxlength="20">
+                <div class="invalid-feedback">
+                  Password is required and should be 8-20 characters long.
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="password2" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="password2" name="password2" required>
+                <div class="invalid-feedback">
+                  Passwords must match.
+                </div>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Sign up</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Bootstrap form validation script
+    (function () {
+      // Строгий режим JavaScript
+      'use strict'
+
+      // Выбирает все элементы с классом 'needs-validation'
+      var forms = document.querySelectorAll('.needs-validation')
+
+      // Преобразует NodeList (который возвращает querySelectorAll) в настоящий массив.
+      // После этого forEach итерируется по каждой форме.
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        // Для каждой формы добавляется обработчик события на событие 'submit' (попытка отправки формы).
+        form.addEventListener('submit', function (event) {
+
+          // Выбираем элемент формы
+          var password1Elem = document.getElementById('password1');
+          var password2Elem = document.getElementById('password2');
+          // Извлекаем текстовое значение
+          var password1 = password1Elem.value;
+          var password2 = password2Elem.value;
+
+          var isValid = true; // предполагаем, что форма валидна
+
+          // Проверка на минимальную длину пароля
+          if (password1.length < 8) {
+            isValid = false;
+            password1Elem.classList.add('is-invalid');
+            password1Elem.classList.remove('is-valid');
+        } else {
+            password1Elem.classList.remove('is-invalid');
+            password1Elem.classList.add('is-valid');
+        }
+          // Сбрасывает сообщения об ошибках для password2Elem
+          password2Elem.setCustomValidity('');
+
+           // Проверка на соответствие паролей
+        if (password1 !== password2) {
+          isValid = false;
+          password2Elem.setCustomValidity('Passwords must match.');
+          password2Elem.classList.add('is-invalid');
+          password2Elem.classList.remove('is-valid');
+        } else {
+          password2Elem.setCustomValidity('');
+          password2Elem.classList.remove('is-invalid');
+          password2Elem.classList.add('is-valid');
+        }
+
+          // Проверяет, проходит ли форма встроенные проверки на валидность HTML5.
+          if (!form.checkValidity()|| !isValid) {
+            // : Если форма не проходит проверку, то preventDefault предотвращает действие по умолчанию
+            // (в данном случае отправку формы), а stopPropagation предотвращает распространение события дальше по
+            // дереву элементов.
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+           // Добавляется класс 'was-validated' к форме. Это позволяет Bootstrap стилизовать форму,
+          // чтобы показать, какие поля прошли проверку
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
+{% endblock %}

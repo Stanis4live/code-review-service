@@ -11,6 +11,7 @@ COPY requirements.txt .
 
 # Устанавливаем зависимости. Команда, которая выполнится при первом запуске контейнера
 RUN addgroup celerygroup && adduser --ingroup celerygroup celeryuser
+RUN mkdir /var/log/mydjangoapp && chown -R celeryuser:celerygroup /var/log/mydjangoapp
 RUN pip install --no-cache-dir psycopg2-binary
 RUN pip install --no-cache-dir -r requirements.txt
 
