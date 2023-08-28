@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 
 def registration(request):
     if request.method == "POST":
+        logger.info('Method - POST!!!')
         # Создаём форму на основе POST-данных
         form = RegistrationForm(request.POST)
         if form.is_valid():
+            logger.info('Form is valid')
             # Устанавливаем значение username равным значению email
             email = form.cleaned_data.get('email')
             form.instance.username = email
@@ -27,8 +29,13 @@ def registration(request):
                 messages.success(request, f'Account for {email} successfully created! Now you can login.')
                 logger.info(f'Account for {email} successfully created!')
                 return redirect('name-of-login-view') # TODO здесь укажите название вашего представления для авторизации
+        else:
+            logger.info('Form is not valid!!!!!')
+            logger.warning(f'Form validation errors: {form.errors}')
     else:
         form = RegistrationForm()
+    for message in messages.get_messages(request):
+        logger.info(f'Вот такой вот нахуй {message}')
     return render(request, 'registration.html', {'form': form})
 
 
