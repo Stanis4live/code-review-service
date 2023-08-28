@@ -20,6 +20,14 @@
               <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
                 <input type="email" class="form-control" id="email" name="email" required>
+
+                <!-- Отображение ошибки для случая, когда email уже существует -->
+                {% if form.email.errors %}
+                    <div class="alert alert-danger mt-2">
+                        {{ form.email.errors.0 }}  <!-- отображаем только первую ошибку -->
+                    </div>
+                {% endif %}
+
                 <small class="form-text text-muted">Your email must be unique.</small>
                 <div class="invalid-feedback">
                   Please enter a valid email.

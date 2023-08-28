@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
-from .forms import RegistrationForm
-from django.contrib.auth.models import User
+from .forms import RegistrationForm, LoginForm
 import logging
 
 # Создаем экземпляр логгера
@@ -10,34 +10,36 @@ logger = logging.getLogger(__name__)
 
 def registration(request):
     if request.method == "POST":
-        logger.info('Method - POST!!!')
         # Создаём форму на основе POST-данных
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            logger.info('Form is valid')
             # Устанавливаем значение username равным значению email
             email = form.cleaned_data.get('email')
             form.instance.username = email
-            # Проверка на уникальность email и username. Фильтрация записей модели User.
-            if User.objects.filter(email=email).exists() or User.objects.filter(username=email).exists():
-                messages.error(request, f'Account with email {email} already exists.')
-                logger.warning(f'Try to register already existing email: {email}')
-            else:
-                # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
-                form.save()
-                # Отправляется сообщение об успехе
-                messages.success(request, f'Account for {email} successfully created! Now you can login.')
-                logger.info(f'Account for {email} successfully created!')
-                return redirect('name-of-login-view') # TODO здесь укажите название вашего представления для авторизации
+            # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
+            form.save()
+            logger.info(f'Account for {email} successfully created!')
+            return redirect('name-of-login-view')  # TODO здесь укажите название вашего представления для авторизации
         else:
-            logger.info('Form is not valid!!!!!')
             logger.warning(f'Form validation errors: {form.errors}')
     else:
         form = RegistrationForm()
-    for message in messages.get_messages(request):
-        logger.info(f'Вот такой вот нахуй {message}')
+
     return render(request, 'registration.html', {'form': form})
 
 
-def login():
-    pass
+def user_login(request):
+    if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            # authenticate из Django проверяет, существует ли пользователь с указанным username
+            user = authenticate(request, username=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                # используем встроенную функцию login, чтобы залогинить пользователя
+                login(request, user)
+                return redirect('home')  # TODO перенаправьте на главную страницу или другое представление
+            else:
+                form.add_error(None, "Invalid email or password")
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
