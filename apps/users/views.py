@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import RegistrationForm, LoginForm
+from django.contrib.auth import logout
 import logging
 
 # Создаем экземпляр логгера
@@ -19,7 +20,7 @@ def registration(request):
             # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
             form.save()
             logger.info(f'Account for {email} successfully created!')
-            return redirect('name-of-login-view')  # TODO здесь укажите название вашего представления для авторизации
+            return redirect('home')  # TODO здесь укажите название вашего представления для авторизации
         else:
             logger.warning(f'Form validation errors: {form.errors}')
     else:
@@ -39,20 +40,21 @@ def user_login(request):
                 login(request, user)
                 return redirect('home')  # TODO перенаправьте на главную страницу или другое представление
             else:
-                messages.add_message(request, messages.ERROR, "Invalid email or password", extra_tags='danger')
+                messages.add_message(request, messages.ERROR, "Invalid email or password.", extra_tags='danger')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
 
 
-from django.contrib.auth import logout
+
 
 
 # TODO Добавить кнопку
 def user_logout(request):
     logout(request)
-    return redirect('home.html')
+    return redirect('home')
 
 
 def home_view(request):
     return render(request, "home.html")
+
