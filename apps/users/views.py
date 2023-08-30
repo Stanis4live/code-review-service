@@ -39,7 +39,7 @@ def user_login(request):
                 login(request, user)
                 return redirect('home')  # TODO перенаправьте на главную страницу или другое представление
             else:
-                form.add_error(None, "Invalid email or password")
+                messages.add_message(request, messages.ERROR, "Invalid email or password", extra_tags='danger')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
