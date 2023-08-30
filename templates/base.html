@@ -7,25 +7,27 @@
     <title>Code review service</title>
     <!-- Подключение Bootstrap CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    {% block head_extra %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Code review service</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'login' %}">Вход</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
-                </li>
-                <!-- Дополнительные пункты меню при необходимости -->
-            </ul>
-        </div>
-    </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-secondary"> <!-- Изменение фона и цвета текста -->
+    <a class="navbar-brand" href="{% url 'home' %}" style="color: #191970;">Code Review Service</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto"> <!-- Выравнивание пунктов меню по правому краю -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}" >Вход</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
+            </li>
+            <!-- Дополнительные пункты меню при необходимости -->
+        </ul>
+    </div>
+</nav>
+
 
     <div class="container mt-5">
         {% block content %}

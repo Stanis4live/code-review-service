@@ -43,3 +43,16 @@ def user_login(request):
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
+
+
+from django.contrib.auth import logout
+
+
+# TODO Добавить кнопку
+def user_logout(request):
+    logout(request)
+    return redirect('home.html')
+
+
+def home_view(request):
+    return render(request, "home.html")

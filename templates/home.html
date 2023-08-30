@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head_extra %}  <!-- Дополнительные стили -->
+<style>
+    .highlighted {
+        color: #4682B4;  /* Синий цвет Bootstrap */
+    }
+    .img-border {
+        border: 3px solid #808080;
+        border-radius: 10px;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    .custom-ul {
+        background-color: #f7f9fc;
+        padding: 15px;
+        border-radius: 5px;
+        list-style-type: none;
+    }
+    .custom-ul li {
+        margin-bottom: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-7">
+            <h2 class="highlighted">Добро пожаловать в CodeReview Service!</h2>
+            <p>
+                В нашем сервисе вы можете быстро и удобно загрузить свой код на Python для проверки. Мы автоматически анализируем ваш код на соответствие стандартам и общепринятым практикам программирования.
+            </p>
+            <h4 class="highlighted">Наши ключевые особенности:</h4>
+            <ul class="custom-ul">
+                <li>Автоматическая проверка кода.</li>
+                <li>Быстрая обратная связь.</li>
+                <li>Возможность просмотра результатов проверок.</li>
+                <li>Уведомления о результатах на вашу почту.</li>
+            </ul>
+            <p>Приступайте к работе и делайте ваш код лучше с нами!</p>
+        </div>
+        <div class="col-md-5">
+            <img src="{% static 'img/main_image.jpg' %}" alt="Illustration of Code Review" class="img-fluid rounded img-border">
+        </div>
+    </div>
+</div>
+{% endblock %}
