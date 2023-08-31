@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -14,9 +15,7 @@ def registration(request):
         # Создаём форму на основе POST-данных
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            # Устанавливаем значение username равным значению email
             email = form.cleaned_data.get('email')
-            form.instance.username = email
             # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
             form.save()
             logger.info(f'Account for {email} successfully created!')
@@ -50,6 +49,8 @@ def user_login(request):
 
 
 # TODO Добавить кнопку
+# Декоратор гарантирует, что только авторизованные пользователи могут выходить из системы.
+@login_required
 def user_logout(request):
     logout(request)
     return redirect('home')

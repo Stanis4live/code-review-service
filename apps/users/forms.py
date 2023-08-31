@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from apps.users.models import CustomUser
 
 
 # ModelForm позволяет автоматически создать форму на основе модели (в данном случае User).
@@ -10,7 +11,7 @@ class RegistrationForm(forms.ModelForm):
 
     class Meta:
         # Какую модель использовать
-        model = User
+        model = CustomUser
         # Какие поля из этой модели добавить в форму
         fields = ('email',)
         labels = {
@@ -30,7 +31,7 @@ class RegistrationForm(forms.ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        if User.objects.filter(email=email).exists():
+        if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError("This email is already registered.")
         return email
 
