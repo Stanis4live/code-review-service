@@ -11,38 +11,51 @@ logger = logging.getLogger(__name__)
 
 
 def registration(request):
-    if request.method == "POST":
-        # Создаём форму на основе POST-данных
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
-            form.save()
-            logger.info(f'Account for {email} successfully created!')
-            return redirect('home')  # TODO здесь укажите название вашего представления для авторизации
+    try:
+        if request.method == "POST":
+            # Создаём форму на основе POST-данных
+            form = RegistrationForm(request.POST)
+            if form.is_valid():
+                email = form.cleaned_data.get('email')
+                # Создаваём нового пользователя в базе данных с полями, которые были введены в форму.
+                form.save()
+                logger.info(f'Account for {email} successfully created!')
+                return redirect('home')  # TODO здесь укажите название вашего представления для авторизации
+            else:
+                logger.warning(f'Form validation errors: {form.errors}')
         else:
-            logger.warning(f'Form validation errors: {form.errors}')
-    else:
-        form = RegistrationForm()
+            form = RegistrationForm()
 
-    return render(request, 'registration.html', {'form': form})
+        return render(request, 'registration.html', {'form': form})
+
+    except Exception as e:
+        logger.error(f"Error during registration: {e}")
+        messages.add_message(request, messages.ERROR, "show_error_modal")
 
 
 def user_login(request):
-    if request.method == "POST":
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            # authenticate из Django проверяет, существует ли пользователь с указанным username
-            user = authenticate(request, username=form.cleaned_data['email'], password=form.cleaned_data['password'])
-            if user is not None:
-                # используем встроенную функцию login, чтобы залогинить пользователя
-                login(request, user)
-                return redirect('home')  # TODO перенаправьте на главную страницу или другое представление
-            else:
-                messages.add_message(request, messages.ERROR, "Invalid email or password.", extra_tags='danger')
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+    try:
+        if request.method == "POST":
+            form = LoginForm(request.POST)
+            if form.is_valid():
+                logger.info(f"Login attempt for user: {form.cleaned_data['email']}")
+                # authenticate из Django проверяет, существует ли пользователь с указанным username
+                user = authenticate(request, username=form.cleaned_data['email'], password=form.cleaned_data['password'])
+                if user is not None:
+                    logger.info(f"User {user.email} logged in successfully.")
+                    # используем встроенную функцию login, чтобы залогинить пользователя
+                    login(request, user)
+                    return redirect('home')  # TODO перенаправьте на главную страницу или другое представление
+                else:
+                    logger.error(f"Authentication error for user: {form.cleaned_data['email']}")
+                    messages.add_message(request, messages.ERROR, "Invalid email or password.", extra_tags='danger')
+        else:
+            form = LoginForm()
+        return render(request, 'login.html', {'form': form})
+
+    except Exception as e:
+        logger.error(f"Error during login: {e}")
+        messages.add_message(request, messages.ERROR, "show_error_modal")
 
 
 
@@ -52,8 +65,14 @@ def user_login(request):
 # Декоратор гарантирует, что только авторизованные пользователи могут выходить из системы.
 @login_required
 def user_logout(request):
-    logout(request)
-    return redirect('home')
+    try:
+        logger.info(f"User {request.user.email} logged out.")
+        logout(request)
+        return redirect('home')
+
+    except Exception as e:
+        logger.error(f"Error during logout: {e}")
+        messages.add_message(request, messages.ERROR, "show_error_modal")
 
 
 def home_view(request):
