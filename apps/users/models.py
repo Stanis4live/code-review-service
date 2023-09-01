@@ -49,6 +49,9 @@ class CodeFile(models.Model):
     file = models.FileField(upload_to='code_files/')
     # Хранить дату и время загрузки файла, автоматически устанавливает текущую дату и время при создании новой записи.
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    # auto_now=True означает, что при каждом сохранении (при создании или изменении) поле будет автоматически
+    # обновляться текущим временем.
+    updated_at = models.DateTimeField(auto_now=True)
     # Хранит текущий статус файла.
     status = models.CharField(
         max_length=20,
