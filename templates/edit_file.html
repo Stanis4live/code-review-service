@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-3">Edit File</h2>
+    <p class="text-warning">
+        Warning: Uploading a new file will replace the existing one.
+    </p>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="fileInput">Choose a new file to replace the existing one</label>
+            {{ form.file }}
+        </div>
+        <button type="submit" class="btn btn-warning">Replace File</button>
+        <a href="{% url 'file_list' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

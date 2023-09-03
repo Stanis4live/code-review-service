@@ -5,5 +5,6 @@ from apps.users import views as user_views
 urlpatterns = [
     path("admin/", admin.site.urls),
     path('accounts/', include('apps.users.urls')),
+    path('files/', include('apps.files.urls')),
     path('', user_views.home_view, name='home'),
 ]

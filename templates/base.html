@@ -17,19 +17,40 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto"> <!-- Выравнивание пунктов меню по правому краю -->
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'login' %}" >Вход</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'registration' %}">Регистрация</a>
-            </li>
-            <!-- Дополнительные пункты меню при необходимости -->
+            {% if user.is_authenticated %}
+            <!-- Если пользователь авторизован: -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'upload_file' %}">Upload File</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'file_list' %}">My Files</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'login' %}" >Log In</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'registration' %}">Sign Up</a>
+                </li>
+            {% endif %}
         </ul>
     </div>
 </nav>
 
 
     <div class="container mt-5">
+         {% if messages %}
+        <div class="messages mt-2">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+    </div>
+    {% endif %}
         {% block content %}
         {% endblock %}
     </div>

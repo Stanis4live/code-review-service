@@ -55,6 +55,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "code_review_service.wsgi.application"
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 
 DATABASES = {
