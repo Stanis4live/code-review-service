@@ -7,15 +7,16 @@
     <thead>
       <tr>
         <th>Name</th>
-        <th>Date Uploaded</th>
+        <th>Date Updated</th>
         <th>Actions</th>
       </tr>
     </thead>
     <tbody>
       {% for file in files %}
         <tr>
-          <td>{{ file.name }}</td>
-          <td>{{ file.date_created }}</td>
+<!--          чтобы отображалось только имя файла-->
+          <td>{{ file.filename }}</td>
+          <td>{{ file.updated_at }}</td>
           <td>
             <a href="{% url 'view_file' file.id %}" class="btn btn-info">View</a>
             <a href="{% url 'edit_file' file.id %}" class="btn btn-warning">Edit</a>
@@ -50,9 +51,16 @@
     </div>
   </div>
 
-  <script>
 
+{% endblock %}
+
+
+
+
+{% block scripts %}
+  <script>
   $(document).ready(function(){
+
       $('#deleteModal').on('show.bs.modal', function (event) {
           var button = $(event.relatedTarget);
           var fileId = button.data('fileid');
@@ -60,8 +68,8 @@
 
           var modal = $(this);
           modal.find('#fileName').text(fileName);
-          modal.find('#deleteForm').attr('action', '/path-to-delete-function/' + fileId + '/');
+          modal.find('#deleteForm').attr('action', '/files/delete_file/' + fileId + '/');
       });
   });
-  </script>
+    </script>
 {% endblock %}

@@ -28,6 +28,9 @@ def upload_file(request):
 # TODO нужен ли тут статус проверки?
 def file_list(request):
     files = CodeFile.objects.filter(user=request.user)
+    # Создаём новое поле, которое будет содержать только имя файла
+    for file in files:
+        file.filename = file.file.name.split("/")[-1]
     return render(request, 'file_list.html', {'files': files})
 
 
@@ -44,7 +47,7 @@ def edit_file(request, file_id):
         form = UploadFileForm(request.POST, request.FILES, instance=file_instance)
         if form.is_valid():
             form.save()
-            return redirect('uploaded_files_list') # or wherever you want to redirect after editing
+            return redirect('file_list') # or wherever you want to redirect after editing
     else:
         # instance содержит экземпляр модели CodeFile. Это сообщает форме, что она должна предзаполниться данными
         # из этого экземпляра, а не быть пустой.
@@ -57,6 +60,6 @@ def delete_file(request, file_id):
     if request.method == 'POST':
         file_instance.delete()
         messages.success(request, 'File successfully deleted!')
-        return redirect('uploaded_files_list')
+        return redirect('file_list')
     messages.error(request, 'Invalid request method.')
-    return redirect('uploaded_files_list')
+    return redirect('file_list')
